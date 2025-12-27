@@ -49,6 +49,43 @@ Feedback and contributions are welcome.
 
 ---
 
+## 🔧 Installation
+
+**Note:** The project is currently in the initial setup phase. The frontend and backend directories are prepared but not yet implemented.
+
+### Prerequisites
+- Node.js 18+ (when implementation begins)
+- PostgreSQL (for production)
+- npm or yarn
+
+### Getting Started (Coming Soon)
+
+Once development begins, installation will follow these steps:
+
+```bash
+# Clone the repository
+git clone https://github.com/verbosd-star/flowvera-saas.git
+cd flowvera-saas
+
+# Install frontend dependencies
+cd frontend
+npm install
+
+# Install backend dependencies
+cd ../backend
+npm install
+
+# Set up environment variables
+cp .env.example .env
+
+# Run development servers
+npm run dev
+```
+
+Stay tuned for updates as we build out the platform!
+
+---
+
 ## 📈 Roadmap
 
 See [ROADMAP.md](ROADMAP.md)
