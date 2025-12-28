@@ -51,38 +51,57 @@ Feedback and contributions are welcome.
 
 ## 🔧 Installation
 
-**Note:** The project is currently in the initial setup phase. The frontend and backend directories are prepared but not yet implemented.
-
 ### Prerequisites
-- Node.js 18+ (when implementation begins)
-- PostgreSQL (for production)
+- Node.js 18+ 
 - npm or yarn
+- PostgreSQL (for production deployment)
 
-### Getting Started (Coming Soon)
+### Getting Started
 
-Once development begins, installation will follow these steps:
+The project is now initialized with Next.js frontend and NestJS backend!
 
 ```bash
 # Clone the repository
 git clone https://github.com/verbosd-star/flowvera-saas.git
 cd flowvera-saas
 
-# Install frontend dependencies
-cd frontend
-npm install
+# Install all dependencies (root, frontend, and backend)
+npm run install:all
 
-# Install backend dependencies
-cd ../backend
-npm install
-
-# Set up environment variables
-cp .env.example .env
-
-# Run development servers
+# Run both frontend and backend in development mode
 npm run dev
+
+# Or run them separately:
+npm run dev:frontend  # Frontend on http://localhost:3000
+npm run dev:backend   # Backend on http://localhost:3000
 ```
 
-Stay tuned for updates as we build out the platform!
+### Project Structure
+
+```
+flowvera-saas/
+├── frontend/          # Next.js 16 + Tailwind CSS + TypeScript
+├── backend/           # NestJS + TypeScript
+├── docs/              # Documentation
+└── package.json       # Root workspace configuration
+```
+
+### Development
+
+```bash
+# Frontend development (Next.js)
+cd frontend
+npm run dev          # Start dev server
+npm run build        # Build for production
+npm run lint         # Run ESLint
+
+# Backend development (NestJS)
+cd backend
+npm run start:dev    # Start with watch mode
+npm run build        # Build for production
+npm run test         # Run tests
+npm run lint         # Run ESLint
+```
 
 ---
 
