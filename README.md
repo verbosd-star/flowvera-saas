@@ -73,7 +73,7 @@ npm run dev
 
 # Or run them separately:
 npm run dev:frontend  # Frontend on http://localhost:3000
-npm run dev:backend   # Backend on http://localhost:3000
+npm run dev:backend   # Backend on http://localhost:3001
 ```
 
 ### Project Structure
