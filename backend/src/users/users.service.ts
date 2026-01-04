@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User, UserRole } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +13,7 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     
     const user: User = {
-      id: Date.now().toString(),
+      id: randomUUID(),
       email: createUserDto.email,
       password: hashedPassword,
       firstName: createUserDto.firstName,
