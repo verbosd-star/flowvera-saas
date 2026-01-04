@@ -10,9 +10,11 @@ Flowvera is an all-in-one SaaS platform that combines **project management (Mond
 
 - 🗂️ Visual project boards
 - 🤝 Built-in CRM
-- 🔐 Secure authentication
+- 🔐 **Secure authentication with JWT & RBAC** ✅
 - 🎛️ Admin control panel
 - 💳 Subscription-based SaaS model
+
+> ✅ = Implemented | 🚧 = In Progress | 📋 = Planned
 
 ---
 
@@ -32,13 +34,13 @@ Upgrade anytime.
 
 ---
 
-## 🛠️ Tech Stack (Planned)
+## 🛠️ Tech Stack
 
-- Frontend: Next.js + Tailwind
-- Backend: Node.js / NestJS
-- Database: PostgreSQL
-- Auth: JWT + RBAC
-- Billing: Stripe Subscriptions
+- **Frontend**: Next.js 16 + Tailwind CSS + TypeScript
+- **Backend**: NestJS + TypeScript
+- **Database**: PostgreSQL (in-memory for now)
+- **Auth**: JWT + RBAC with Passport.js ✅
+- **Billing**: Stripe Subscriptions (planned)
 
 ---
 
@@ -58,7 +60,7 @@ Feedback and contributions are welcome.
 
 ### Getting Started
 
-The project is now initialized with Next.js frontend and NestJS backend!
+The project includes a complete authentication system with login, registration, and protected routes!
 
 ```bash
 # Clone the repository
@@ -68,6 +70,11 @@ cd flowvera-saas
 # Install all dependencies (root, frontend, and backend)
 npm run install:all
 
+# Set up environment variables
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+# Edit the .env files with your configuration
+
 # Run both frontend and backend in development mode
 npm run dev
 
@@ -75,6 +82,12 @@ npm run dev
 npm run dev:frontend  # Frontend on http://localhost:3000
 npm run dev:backend   # Backend on http://localhost:3001
 ```
+
+**Try it out:**
+1. Visit http://localhost:3000
+2. Click "Get Started" to create an account
+3. Access the protected dashboard
+4. Test login/logout functionality
 
 ### Project Structure
 
@@ -102,6 +115,21 @@ npm run build        # Build for production
 npm run test         # Run tests
 npm run lint         # Run ESLint
 ```
+
+### Authentication
+
+The authentication module is fully implemented! See detailed documentation:
+
+- **[Authentication API Documentation](docs/AUTHENTICATION.md)** - API endpoints and usage
+- **[Authentication Development Guide](docs/AUTHENTICATION_GUIDE.md)** - Implementation details and examples
+
+**Features:**
+- User registration and login
+- JWT-based authentication
+- Role-Based Access Control (RBAC)
+- Protected routes on frontend
+- Password hashing with bcrypt
+- Token-based session management
 
 ---
 
