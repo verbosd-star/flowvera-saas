@@ -9,7 +9,6 @@ import { projectsApi, Project, Task } from '@/lib/api/projects';
 export default function ProjectDetailPage({ params }: { params: { id: string } }) {
   const { user, logout } = useAuth();
   const router = useRouter();
-  const [projectId, setProjectId] = useState<string | null>(null);
   const [project, setProject] = useState<Project | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,28 +19,15 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Handle async params in Next.js 15+
-    const loadParams = async () => {
-      const resolvedParams = await Promise.resolve(params);
-      setProjectId(resolvedParams.id);
-    };
-    loadParams();
-  }, [params]);
-
-  useEffect(() => {
-    if (projectId) {
-      loadProjectAndTasks();
-    }
-  }, [projectId]);
+    loadProjectAndTasks();
+  }, [params.id]);
 
   const loadProjectAndTasks = async () => {
-    if (!projectId) return;
-    
     try {
       setLoading(true);
       const [projectData, tasksData] = await Promise.all([
-        projectsApi.getOne(projectId),
-        projectsApi.getTasks(projectId),
+        projectsApi.getOne(params.id),
+        projectsApi.getTasks(params.id),
       ]);
       setProject(projectData);
       setTasks(tasksData);
@@ -56,10 +42,8 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
 
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!projectId) return;
-    
     try {
-      await projectsApi.createTask(projectId, {
+      await projectsApi.createTask(params.id, {
         title: newTaskTitle,
         description: newTaskDescription,
         priority: newTaskPriority,
@@ -76,10 +60,8 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
   };
 
   const handleUpdateTaskStatus = async (taskId: string, newStatus: Task['status']) => {
-    if (!projectId) return;
-    
     try {
-      await projectsApi.updateTask(projectId, taskId, { status: newStatus });
+      await projectsApi.updateTask(params.id, taskId, { status: newStatus });
       loadProjectAndTasks();
     } catch (err) {
       console.error('Failed to update task:', err);
@@ -89,10 +71,9 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
 
   const handleDeleteTask = async (taskId: string) => {
     if (!confirm('Are you sure you want to delete this task?')) return;
-    if (!projectId) return;
     
     try {
-      await projectsApi.deleteTask(projectId, taskId);
+      await projectsApi.deleteTask(params.id, taskId);
       loadProjectAndTasks();
     } catch (err) {
       console.error('Failed to delete task:', err);
