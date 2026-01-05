@@ -10,7 +10,7 @@ Flowvera is an all-in-one SaaS platform that combines **project management (Mond
 
 - 🗂️ **Visual project boards** ✅
 - 📋 **Monday-style task management** ✅
-- 🤝 Built-in CRM
+- 🤝 **Built-in CRM** ✅
 - 🔐 **Secure authentication with JWT & RBAC** ✅
 - 🎛️ Admin control panel
 - 💳 Subscription-based SaaS model
@@ -88,7 +88,9 @@ npm run dev:backend   # Backend on http://localhost:3001
 1. Visit http://localhost:3000
 2. Click "Get Started" to create an account
 3. Access the protected dashboard
-4. Test login/logout functionality
+4. Navigate to Projects to manage your work
+5. Navigate to CRM to manage contacts and companies
+6. Test login/logout functionality
 
 ### Project Structure
 
@@ -131,6 +133,34 @@ The authentication module is fully implemented! See detailed documentation:
 - Protected routes on frontend
 - Password hashing with bcrypt
 - Token-based session management
+
+### CRM Module
+
+The CRM module is now available for managing contacts and companies!
+
+**API Endpoints (http://localhost:3001):**
+- `POST /crm/contacts` - Create a new contact
+- `GET /crm/contacts` - Get all contacts
+- `GET /crm/contacts/:id` - Get a specific contact
+- `PATCH /crm/contacts/:id` - Update a contact
+- `DELETE /crm/contacts/:id` - Delete a contact
+- `POST /crm/companies` - Create a new company
+- `GET /crm/companies` - Get all companies
+- `GET /crm/companies/:id` - Get a specific company
+- `PATCH /crm/companies/:id` - Update a company
+- `DELETE /crm/companies/:id` - Delete a company
+- `GET /crm/companies/:id/contacts` - Get all contacts for a company
+
+**Frontend Pages (http://localhost:3000):**
+- `/crm/contacts` - Manage contacts
+- `/crm/companies` - Manage companies
+
+**Features:**
+- Contact management with types (lead, prospect, client)
+- Company management with industry and size tracking
+- Contact-company associations
+- JWT authentication on all endpoints
+- Full CRUD operations
 
 ---
 
