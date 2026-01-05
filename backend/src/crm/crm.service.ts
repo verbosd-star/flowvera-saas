@@ -132,13 +132,12 @@ export class CrmService {
     const company = this.findOneCompany(id, userId);
 
     // Remove all contacts associated with this company
-    const companyContacts = this.findAllContacts(userId).filter(
-      (contact) => contact.companyId === company.id,
-    );
-    companyContacts.forEach((contact) => {
-      const updatedContact = { ...contact, companyId: undefined };
-      this.contacts.set(contact.id, updatedContact);
-    });
+    for (const [contactId, contact] of this.contacts.entries()) {
+      if (contact.companyId === company.id && contact.ownerId === userId) {
+        const updatedContact = { ...contact, companyId: undefined };
+        this.contacts.set(contactId, updatedContact);
+      }
+    }
 
     this.companies.delete(company.id);
   }

@@ -160,7 +160,6 @@ export default function ContactsPage() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex gap-4 mb-6">
             <button
-              onClick={() => router.push('/crm/contacts')}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium"
             >
               Contacts
