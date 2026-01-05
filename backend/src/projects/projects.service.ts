@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Project, ProjectStatus } from './entities/project.entity';
 import { Task, TaskStatus, TaskPriority } from './entities/task.entity';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -45,9 +49,13 @@ export class ProjectsService {
     return project;
   }
 
-  update(id: string, updateProjectDto: UpdateProjectDto, userId: string): Project {
+  update(
+    id: string,
+    updateProjectDto: UpdateProjectDto,
+    userId: string,
+  ): Project {
     const project = this.findOne(id, userId);
-    
+
     const updatedProject = {
       ...project,
       ...updateProjectDto,
@@ -60,16 +68,20 @@ export class ProjectsService {
 
   remove(id: string, userId: string): void {
     const project = this.findOne(id, userId);
-    
+
     // Delete all tasks associated with this project
     const projectTasks = this.findAllTasks(id, userId);
     projectTasks.forEach((task) => this.tasks.delete(task.id));
-    
+
     this.projects.delete(id);
   }
 
   // Task methods
-  createTask(projectId: string, createTaskDto: CreateTaskDto, userId: string): Task {
+  createTask(
+    projectId: string,
+    createTaskDto: CreateTaskDto,
+    userId: string,
+  ): Task {
     const project = this.findOne(projectId, userId);
 
     const task: Task = {
@@ -80,7 +92,9 @@ export class ProjectsService {
       priority: createTaskDto.priority || TaskPriority.MEDIUM,
       projectId: project.id,
       assignedTo: createTaskDto.assignedTo,
-      dueDate: createTaskDto.dueDate ? new Date(createTaskDto.dueDate) : undefined,
+      dueDate: createTaskDto.dueDate
+        ? new Date(createTaskDto.dueDate)
+        : undefined,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -92,7 +106,7 @@ export class ProjectsService {
   findAllTasks(projectId: string, userId: string): Task[] {
     // Verify user has access to the project
     this.findOne(projectId, userId);
-    
+
     return Array.from(this.tasks.values()).filter(
       (task) => task.projectId === projectId,
     );
@@ -101,7 +115,7 @@ export class ProjectsService {
   findOneTask(projectId: string, taskId: string, userId: string): Task {
     // Verify user has access to the project
     this.findOne(projectId, userId);
-    
+
     const task = this.tasks.get(taskId);
     if (!task) {
       throw new NotFoundException(`Task with ID ${taskId} not found`);
@@ -119,11 +133,13 @@ export class ProjectsService {
     userId: string,
   ): Task {
     const task = this.findOneTask(projectId, taskId, userId);
-    
+
     const updatedTask = {
       ...task,
       ...updateTaskDto,
-      dueDate: updateTaskDto.dueDate ? new Date(updateTaskDto.dueDate) : task.dueDate,
+      dueDate: updateTaskDto.dueDate
+        ? new Date(updateTaskDto.dueDate)
+        : task.dueDate,
       updatedAt: new Date(),
     };
 

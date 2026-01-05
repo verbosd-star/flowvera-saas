@@ -11,7 +11,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    
+
     const user: User = {
       id: randomUUID(),
       email: createUserDto.email,
@@ -29,11 +29,11 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | undefined> {
-    return this.users.find(user => user.email === email);
+    return this.users.find((user) => user.email === email);
   }
 
   async findById(id: string): Promise<User | undefined> {
-    return this.users.find(user => user.id === id);
+    return this.users.find((user) => user.id === id);
   }
 
   async findAll(): Promise<User[]> {
