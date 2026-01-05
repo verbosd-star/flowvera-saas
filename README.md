@@ -8,7 +8,8 @@ Flowvera is an all-in-one SaaS platform that combines **project management (Mond
 
 ## ✨ Features
 
-- 🗂️ Visual project boards
+- 🗂️ **Visual project boards** ✅
+- 📋 **Monday-style task management** ✅
 - 🤝 Built-in CRM
 - 🔐 **Secure authentication with JWT & RBAC** ✅
 - 🎛️ Admin control panel

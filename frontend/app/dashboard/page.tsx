@@ -81,12 +81,18 @@ export default function DashboardPage() {
             </div>
 
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-6 border border-zinc-200 dark:border-zinc-700">
+              <button
+                onClick={() => router.push('/projects')}
+                className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-6 border border-zinc-200 dark:border-zinc-700 hover:shadow-lg transition-shadow text-left"
+              >
                 <h4 className="font-semibold text-zinc-900 dark:text-white mb-2">Projects</h4>
                 <p className="text-zinc-600 dark:text-zinc-400 text-sm">
-                  Manage your projects here (Coming soon)
+                  Manage your projects and tasks with Monday-style boards
                 </p>
-              </div>
+                <div className="mt-4 text-blue-600 dark:text-blue-400 font-medium text-sm">
+                  Go to Projects →
+                </div>
+              </button>
               <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-6 border border-zinc-200 dark:border-zinc-700">
                 <h4 className="font-semibold text-zinc-900 dark:text-white mb-2">CRM</h4>
                 <p className="text-zinc-600 dark:text-zinc-400 text-sm">
