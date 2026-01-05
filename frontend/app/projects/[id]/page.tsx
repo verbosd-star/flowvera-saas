@@ -20,7 +20,8 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
 
   useEffect(() => {
     loadProjectAndTasks();
-  }, [params.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadProjectAndTasks = async () => {
     try {
