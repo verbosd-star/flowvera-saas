@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { projectsApi, Project, Task } from '@/lib/api/projects';
 
-export default function ProjectDetailPage({ params }: { params: { id: string } }) {
+export default function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const { id: projectId } = use(params);
   const [project, setProject] = useState<Project | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,8 +28,8 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     try {
       setLoading(true);
       const [projectData, tasksData] = await Promise.all([
-        projectsApi.getOne(params.id),
-        projectsApi.getTasks(params.id),
+        projectsApi.getOne(projectId),
+        projectsApi.getTasks(projectId),
       ]);
       setProject(projectData);
       setTasks(tasksData);
@@ -44,7 +45,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await projectsApi.createTask(params.id, {
+      await projectsApi.createTask(projectId, {
         title: newTaskTitle,
         description: newTaskDescription,
         priority: newTaskPriority,
@@ -62,7 +63,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
 
   const handleUpdateTaskStatus = async (taskId: string, newStatus: Task['status']) => {
     try {
-      await projectsApi.updateTask(params.id, taskId, { status: newStatus });
+      await projectsApi.updateTask(projectId, taskId, { status: newStatus });
       loadProjectAndTasks();
     } catch (err) {
       console.error('Failed to update task:', err);
@@ -74,7 +75,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     if (!confirm('Are you sure you want to delete this task?')) return;
     
     try {
-      await projectsApi.deleteTask(params.id, taskId);
+      await projectsApi.deleteTask(projectId, taskId);
       loadProjectAndTasks();
     } catch (err) {
       console.error('Failed to delete task:', err);
