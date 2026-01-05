@@ -106,6 +106,12 @@ export default function ProjectsPage() {
                   >
                     Projects
                   </button>
+                  <button
+                    onClick={() => router.push('/crm/contacts')}
+                    className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                  >
+                    CRM
+                  </button>
                 </nav>
               </div>
               <div className="flex items-center gap-4">

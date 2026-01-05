@@ -24,7 +24,10 @@ export class ProjectsController {
 
   // Project endpoints
   @Post()
-  create(@Body() createProjectDto: CreateProjectDto, @CurrentUser() user: User) {
+  create(
+    @Body() createProjectDto: CreateProjectDto,
+    @CurrentUser() user: User,
+  ) {
     return this.projectsService.create(createProjectDto, user.id);
   }
 
@@ -84,7 +87,12 @@ export class ProjectsController {
     @Body() updateTaskDto: UpdateTaskDto,
     @CurrentUser() user: User,
   ) {
-    return this.projectsService.updateTask(projectId, taskId, updateTaskDto, user.id);
+    return this.projectsService.updateTask(
+      projectId,
+      taskId,
+      updateTaskDto,
+      user.id,
+    );
   }
 
   @Delete(':id/tasks/:taskId')
