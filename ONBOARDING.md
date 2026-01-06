@@ -1,7 +1,12 @@
 # Flujo de activación
 
+## Requisitos previos
+- Asegúrate de tener la aplicación corriendo en tu entorno local
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:3001
+
 ## Paso 1: Registro sencillo
-- Visita la página principal de Flowvera
+- Visita http://localhost:3000
 - Haz clic en "Get Started" o "Create Account"
 - Completa el formulario de registro con:
   - Nombre y apellido
@@ -19,7 +24,7 @@
   - **Settings**: Configuración de cuenta (próximamente)
 
 ## Paso 3: Creación del primer proyecto
-- Navega a la sección "Projects"
+- Navega a la sección "Projects" o visita http://localhost:3000/projects
 - Haz clic en "Create New Project"
 - Ingresa:
   - Nombre del proyecto
@@ -38,10 +43,10 @@
 - Arrastra y suelta tareas entre columnas para cambiar su estado
 
 ## Paso 5: Configuración del CRM
-- Navega a la sección "CRM"
+- Navega a la sección "CRM" o visita http://localhost:3000/crm
 - Explora dos opciones:
-  - **Contacts**: Gestión de contactos individuales
-  - **Companies**: Gestión de empresas
+  - **Contacts** (http://localhost:3000/crm/contacts): Gestión de contactos individuales
+  - **Companies** (http://localhost:3000/crm/companies): Gestión de empresas
 - Crea tu primer contacto con:
   - Información básica (nombre, email, teléfono)
   - Tipo de contacto (Lead, Prospect, Client)
