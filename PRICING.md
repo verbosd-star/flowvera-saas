@@ -172,4 +172,4 @@ Sí, puedes cancelar tu suscripción en cualquier momento sin penalizaciones. Tu
 
 ---
 
-*Los precios están en USD y sujetos a cambios. Última actualización: Enero 2024*
+*Los precios están en USD y sujetos a cambios. Última actualización: Enero 2026*
