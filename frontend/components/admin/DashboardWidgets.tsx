@@ -31,15 +31,24 @@ export default function DashboardWidgets() {
       const now = new Date();
       const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
       
-      setStats({
-        totalUsers: users.length,
-        activeUsers: users.filter(u => u.isActive).length,
-        adminUsers: users.filter(u => u.role === 'admin').length,
-        recentUsers: users.filter(u => {
-          const createdAt = new Date(u.createdAt || '');
-          return createdAt >= sevenDaysAgo;
-        }).length,
+      // Calculate all stats in a single pass
+      const stats = users.reduce((acc, u) => {
+        acc.totalUsers++;
+        if (u.isActive) acc.activeUsers++;
+        if (u.role === 'admin') acc.adminUsers++;
+        if (u.createdAt) {
+          const createdAt = new Date(u.createdAt);
+          if (createdAt >= sevenDaysAgo) acc.recentUsers++;
+        }
+        return acc;
+      }, {
+        totalUsers: 0,
+        activeUsers: 0,
+        adminUsers: 0,
+        recentUsers: 0,
       });
+      
+      setStats(stats);
     } catch (err) {
       console.error('Failed to load stats:', err);
     } finally {
@@ -74,6 +83,16 @@ export default function DashboardWidgets() {
     },
   ];
 
+  const getColorClasses = (color: string) => {
+    const colorMap: Record<string, string> = {
+      blue: 'text-3xl font-bold text-blue-600 dark:text-blue-400',
+      green: 'text-3xl font-bold text-green-600 dark:text-green-400',
+      purple: 'text-3xl font-bold text-purple-600 dark:text-purple-400',
+      amber: 'text-3xl font-bold text-amber-600 dark:text-amber-400',
+    };
+    return colorMap[color] || colorMap.blue;
+  };
+
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -100,7 +119,7 @@ export default function DashboardWidgets() {
             </h3>
             <span className="text-2xl">{widget.icon}</span>
           </div>
-          <div className={`text-3xl font-bold text-${widget.color}-600 dark:text-${widget.color}-400`}>
+          <div className={getColorClasses(widget.color)}>
             {widget.value}
           </div>
         </div>

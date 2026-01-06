@@ -88,6 +88,7 @@ export default function AdminLayout({ children, currentPage = 'dashboard' }: Adm
         className={`fixed top-14 left-0 bottom-0 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 transition-all duration-300 z-20 ${
           sidebarOpen ? 'w-64' : 'w-0'
         } overflow-hidden`}
+        aria-hidden={!sidebarOpen}
       >
         <nav className="p-4">
           <ul className="space-y-1">

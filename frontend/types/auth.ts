@@ -5,6 +5,7 @@ export interface User {
   lastName?: string;
   role: 'admin' | 'user' | 'manager';
   isActive?: boolean;
+  createdAt?: string;
 }
 
 export interface AuthResponse {
