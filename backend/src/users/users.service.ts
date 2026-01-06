@@ -78,4 +78,36 @@ export class UsersService {
     user.password = await bcrypt.hash(changePasswordDto.newPassword, 10);
     user.updatedAt = new Date();
   }
+
+  async updateUser(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Update user fields (admin can update all fields including role and isActive)
+    if (updateUserDto.firstName !== undefined) {
+      user.firstName = updateUserDto.firstName;
+    }
+    if (updateUserDto.lastName !== undefined) {
+      user.lastName = updateUserDto.lastName;
+    }
+    if (updateUserDto.role !== undefined) {
+      user.role = updateUserDto.role;
+    }
+    if (updateUserDto.isActive !== undefined) {
+      user.isActive = updateUserDto.isActive;
+    }
+    user.updatedAt = new Date();
+
+    return user;
+  }
+
+  async deleteUser(userId: string): Promise<void> {
+    const userIndex = this.users.findIndex((user) => user.id === userId);
+    if (userIndex === -1) {
+      throw new NotFoundException('User not found');
+    }
+    this.users.splice(userIndex, 1);
+  }
 }

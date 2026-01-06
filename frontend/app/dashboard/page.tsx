@@ -117,6 +117,20 @@ export default function DashboardPage() {
                   Go to Settings →
                 </div>
               </button>
+              {user?.role === 'admin' && (
+                <button
+                  onClick={() => router.push('/admin')}
+                  className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-6 border border-zinc-200 dark:border-zinc-700 hover:shadow-lg transition-shadow text-left"
+                >
+                  <h4 className="font-semibold text-zinc-900 dark:text-white mb-2">Admin Panel</h4>
+                  <p className="text-zinc-600 dark:text-zinc-400 text-sm">
+                    Manage users and system settings
+                  </p>
+                  <div className="mt-4 text-blue-600 dark:text-blue-400 font-medium text-sm">
+                    Go to Admin →
+                  </div>
+                </button>
+              )}
             </div>
           </div>
         </main>
