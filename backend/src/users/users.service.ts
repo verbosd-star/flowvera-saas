@@ -10,6 +10,33 @@ export class UsersService {
   // In-memory storage for now (will be replaced with database later)
   private users: User[] = [];
 
+  constructor() {
+    // Create default admin user on startup
+    this.initializeDefaultAdmin();
+  }
+
+  private async initializeDefaultAdmin() {
+    const adminEmail = 'admin@flowvera.com';
+    const existingAdmin = await this.findByEmail(adminEmail);
+    
+    if (!existingAdmin) {
+      const hashedPassword = await bcrypt.hash('Admin123!', 10);
+      const admin: User = {
+        id: randomUUID(),
+        email: adminEmail,
+        password: hashedPassword,
+        firstName: 'Admin',
+        lastName: 'User',
+        role: UserRole.ADMIN,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      this.users.push(admin);
+      console.log('✅ Default admin user created: admin@flowvera.com / Admin123!');
+    }
+  }
+
   async create(createUserDto: CreateUserDto): Promise<User> {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
