@@ -12,6 +12,7 @@ Flowvera is an all-in-one SaaS platform that combines **project management (Mond
 - 📋 **Monday-style task management** ✅
 - 🤝 **Built-in CRM** ✅
 - 🔐 **Secure authentication with JWT & RBAC** ✅
+- ⚙️ **User settings & profile management** ✅
 - 🎛️ Admin control panel
 - 💳 Subscription-based SaaS model
 
@@ -90,7 +91,8 @@ npm run dev:backend   # Backend on http://localhost:3001
 3. Access the protected dashboard
 4. Navigate to Projects to manage your work
 5. Navigate to CRM to manage contacts and companies
-6. Test login/logout functionality
+6. Navigate to Settings to update your profile and password
+7. Test login/logout functionality
 
 ### Project Structure
 
@@ -162,6 +164,25 @@ The CRM module is now available for managing contacts and companies!
 - JWT authentication on all endpoints
 - Full CRUD operations
 
+### Settings Module
+
+User settings for profile and account management!
+
+**API Endpoints (http://localhost:3001):**
+- `PUT /settings/profile` - Update user profile (first name, last name)
+- `PUT /settings/password` - Change user password (requires current password)
+
+**Frontend Page (http://localhost:3000):**
+- `/settings` - User settings with Profile and Password tabs
+
+**Features:**
+- Profile information updates (first name, last name)
+- Secure password change with current password verification
+- Form validation (new password must be ≥8 characters)
+- Real-time state updates without page reload
+- JWT authentication required
+- Success/error feedback messages
+
 ---
 
 ## 📈 Roadmap
@@ -172,7 +193,21 @@ See [ROADMAP.md](ROADMAP.md)
 
 ## 🚀 Deployment & Hosting
 
-For production deployment instructions, see [docs/HOSTING.md](docs/HOSTING.md)
+### Vercel (Frontend)
+
+The frontend can be deployed to Vercel with automatic deployments from GitHub.
+
+**Quick Setup:**
+1. Import repository to Vercel
+2. Set Root Directory to `frontend`
+3. Add environment variable: `NEXT_PUBLIC_API_URL`
+4. Deploy!
+
+For detailed Vercel configuration, see [docs/VERCEL_DEPLOYMENT.md](docs/VERCEL_DEPLOYMENT.md)
+
+### Backend Deployment
+
+For backend and full production deployment instructions, see [docs/HOSTING.md](docs/HOSTING.md)
 
 ---
 

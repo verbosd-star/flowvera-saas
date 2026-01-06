@@ -105,12 +105,18 @@ export default function DashboardPage() {
                   Go to CRM →
                 </div>
               </button>
-              <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-6 border border-zinc-200 dark:border-zinc-700">
+              <button
+                onClick={() => router.push('/settings')}
+                className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-6 border border-zinc-200 dark:border-zinc-700 hover:shadow-lg transition-shadow text-left"
+              >
                 <h4 className="font-semibold text-zinc-900 dark:text-white mb-2">Settings</h4>
                 <p className="text-zinc-600 dark:text-zinc-400 text-sm">
-                  Manage your account settings (Coming soon)
+                  Manage your account settings and profile
                 </p>
-              </div>
+                <div className="mt-4 text-blue-600 dark:text-blue-400 font-medium text-sm">
+                  Go to Settings →
+                </div>
+              </button>
             </div>
           </div>
         </main>

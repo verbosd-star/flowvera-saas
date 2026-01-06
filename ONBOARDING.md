@@ -21,7 +21,7 @@
 - Conoce las tres áreas principales:
   - **Projects**: Gestión de proyectos estilo Monday
   - **CRM**: Gestión de contactos y empresas
-  - **Settings**: Configuración de cuenta (próximamente)
+  - **Settings**: Configuración de perfil y contraseña
 
 ## Paso 3: Creación del primer proyecto
 - Navega a la sección "Projects" o visita http://localhost:3000/projects
@@ -56,10 +56,26 @@
   - Industria y tamaño
   - Lista de contactos asociados
 
-## Paso 6: Flujo de trabajo diario
+## Paso 6: Configuración de Usuario
+- Navega a "Settings" o visita http://localhost:3000/settings
+- Explora dos secciones:
+  - **Profile** (Perfil): Actualiza tu nombre y apellido
+  - **Password** (Contraseña): Cambia tu contraseña de forma segura
+- Actualiza tu información de perfil:
+  - Primer nombre (First Name)
+  - Apellido (Last Name)
+  - El email no se puede cambiar por seguridad
+- Cambia tu contraseña:
+  - Ingresa tu contraseña actual
+  - Ingresa nueva contraseña (mínimo 8 caracteres)
+  - Confirma la nueva contraseña
+- Los cambios se guardan automáticamente
+
+## Paso 7: Flujo de trabajo diario
 - Revisa tu Dashboard para ver un resumen
 - Actualiza el estado de tus tareas en Projects
 - Gestiona la información de clientes en CRM
+- Mantén tu perfil actualizado en Settings
 - Invita a miembros del equipo (próximamente)
 - Explora funciones de reportes y análisis (próximamente)
 

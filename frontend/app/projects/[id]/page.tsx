@@ -157,6 +157,18 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   >
                     Projects
                   </button>
+                  <button
+                    onClick={() => router.push('/crm/contacts')}
+                    className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                  >
+                    CRM
+                  </button>
+                  <button
+                    onClick={() => router.push('/settings')}
+                    className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                  >
+                    Settings
+                  </button>
                 </nav>
               </div>
               <div className="flex items-center gap-4">
