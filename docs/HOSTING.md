@@ -317,7 +317,7 @@ Consulta con el equipo de ventas para opciones empresariales con:
 
 ### Recursos Adicionales
 
-- [Documentación de Autenticación](./AUTHENTICATION.md)
+- [Documentación de Autenticación](AUTHENTICATION.md)
 - [Guía de Onboarding](../ONBOARDING.md)
 - [Precios y Planes](../PRICING.md)
 - [Roadmap del Producto](../ROADMAP.md)
@@ -326,7 +326,7 @@ Consulta con el equipo de ventas para opciones empresariales con:
 
 Para soporte empresarial o consultas sobre hosting dedicado:
 - 📧 Email: soporte@flowvera.com
-- 💬 Chat: Disponible en http://localhost:3000 (desarrollo)
+- 💬 Chat: Disponible en la aplicación web
 
 ---
 
