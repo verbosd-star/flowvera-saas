@@ -12,7 +12,6 @@ export class UpdateUserDto {
 
 export class ChangePasswordDto {
   @IsString()
-  @MinLength(8)
   currentPassword: string;
 
   @IsString()

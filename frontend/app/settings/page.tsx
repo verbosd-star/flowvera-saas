@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { settingsApi, UpdateProfileData, ChangePasswordData } from '@/lib/api/settings';
 
 export default function SettingsPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'profile' | 'password'>('profile');
   
@@ -44,20 +44,11 @@ export default function SettingsPage() {
     try {
       const updatedUser = await settingsApi.updateProfile(profileData);
       
-      // Update user in local storage
-      if (typeof window !== 'undefined') {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          const userObj = JSON.parse(storedUser);
-          localStorage.setItem('user', JSON.stringify({ ...userObj, ...updatedUser }));
-        }
-      }
+      // Update user in context and local storage
+      updateUser(updatedUser);
       
       setProfileSuccess(true);
       setTimeout(() => setProfileSuccess(false), 3000);
-      
-      // Reload to update user context
-      window.location.reload();
     } catch (err: any) {
       console.error('Failed to update profile:', err);
       setProfileError(err.response?.data?.message || 'Failed to update profile');
