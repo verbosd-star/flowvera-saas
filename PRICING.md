@@ -146,7 +146,7 @@ Sí, puedes cancelar tu suscripción en cualquier momento sin penalizaciones. Tu
 ¿Tienes preguntas sobre los planes?
 
 - 📧 Email: ventas@flowvera.com
-- 💬 Chat en vivo: http://localhost:3000 (cuando la app esté corriendo)
+- 💬 Chat en vivo: Disponible en la aplicación
 - 📅 Agenda una demo: [Próximamente]
 
 ---
@@ -172,4 +172,4 @@ Sí, puedes cancelar tu suscripción en cualquier momento sin penalizaciones. Tu
 
 ---
 
-*Los precios están en USD y sujetos a cambios. Última actualización: Enero 2026*
+*Los precios están en USD y sujetos a cambios. Última actualización: Enero 2024*
