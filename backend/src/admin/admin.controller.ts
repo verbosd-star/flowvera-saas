@@ -9,12 +9,14 @@ import {
   ValidationPipe,
   HttpCode,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../users/user.entity';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { UserRole, User } from '../users/user.entity';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
 
 @Controller('admin')
@@ -43,7 +45,11 @@ export class AdminController {
 
   @Delete('users/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteUser(@Param('id') id: string) {
+  async deleteUser(@Param('id') id: string, @CurrentUser() currentUser: User) {
+    // Prevent admins from deleting themselves
+    if (id === currentUser.id) {
+      throw new BadRequestException('You cannot delete your own account');
+    }
     await this.usersService.deleteUser(id);
   }
 }

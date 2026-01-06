@@ -16,11 +16,13 @@ export class UsersService {
   }
 
   private async initializeDefaultAdmin() {
-    const adminEmail = 'admin@flowvera.com';
+    const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || 'admin@flowvera.com';
+    const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD || 'Admin123!';
+    
     const existingAdmin = await this.findByEmail(adminEmail);
     
     if (!existingAdmin) {
-      const hashedPassword = await bcrypt.hash('Admin123!', 10);
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
       const admin: User = {
         id: randomUUID(),
         email: adminEmail,
@@ -33,7 +35,7 @@ export class UsersService {
         updatedAt: new Date(),
       };
       this.users.push(admin);
-      console.log('✅ Default admin user created: admin@flowvera.com / Admin123!');
+      console.log(`✅ Default admin user created: ${adminEmail}`);
     }
   }
 
