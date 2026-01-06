@@ -2,6 +2,8 @@
 
 Flowvera ofrece planes flexibles diseñados para equipos de todos los tamaños. Comienza con una prueba gratuita sin necesidad de tarjeta de crédito.
 
+> **Para desarrollo local:** Visita http://localhost:3000 para probar la aplicación
+
 ## 🆓 Prueba Gratuita
 
 **Gratis por 14 días**
@@ -146,7 +148,7 @@ Sí, puedes cancelar tu suscripción en cualquier momento sin penalizaciones. Tu
 ¿Tienes preguntas sobre los planes?
 
 - 📧 Email: ventas@flowvera.com
-- 💬 Chat en vivo: Disponible en la aplicación
+- 💬 Chat en vivo: Disponible en la aplicación (http://localhost:3000 en desarrollo)
 - 📅 Agenda una demo: [Próximamente]
 
 ---
