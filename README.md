@@ -193,7 +193,21 @@ See [ROADMAP.md](ROADMAP.md)
 
 ## 🚀 Deployment & Hosting
 
-For production deployment instructions, see [docs/HOSTING.md](docs/HOSTING.md)
+### Vercel (Frontend)
+
+The frontend can be deployed to Vercel with automatic deployments from GitHub.
+
+**Quick Setup:**
+1. Import repository to Vercel
+2. Set Root Directory to `frontend`
+3. Add environment variable: `NEXT_PUBLIC_API_URL`
+4. Deploy!
+
+For detailed Vercel configuration, see [docs/VERCEL_DEPLOYMENT.md](docs/VERCEL_DEPLOYMENT.md)
+
+### Backend Deployment
+
+For backend and full production deployment instructions, see [docs/HOSTING.md](docs/HOSTING.md)
 
 ---
 
