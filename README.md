@@ -170,6 +170,12 @@ See [ROADMAP.md](ROADMAP.md)
 
 ---
 
+## 🚀 Deployment & Hosting
+
+For production deployment instructions, see [docs/HOSTING.md](docs/HOSTING.md)
+
+---
+
 ## 📬 Contact
 
 Interested in partnering or contributing?  
