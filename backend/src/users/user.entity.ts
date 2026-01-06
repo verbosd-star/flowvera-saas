@@ -12,6 +12,7 @@ export class User {
   lastName?: string;
   role: UserRole;
   isActive: boolean;
+  subscriptionId?: string;
   createdAt: Date;
   updatedAt: Date;
 }

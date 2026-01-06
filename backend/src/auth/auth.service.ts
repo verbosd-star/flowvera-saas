@@ -5,6 +5,8 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
+import { SubscriptionPlan } from '../subscriptions/subscription.entity';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
@@ -14,6 +16,7 @@ import { JwtPayload } from './strategies/jwt.strategy';
 export class AuthService {
   constructor(
     private usersService: UsersService,
+    private subscriptionsService: SubscriptionsService,
     private jwtService: JwtService,
   ) {}
 
@@ -26,6 +29,16 @@ export class AuthService {
 
     // Create new user
     const user = await this.usersService.create(registerDto);
+
+    // Create free trial subscription for the new user
+    try {
+      const subscription = await this.subscriptionsService.create(user.id, {
+        plan: SubscriptionPlan.FREE_TRIAL,
+      });
+      user.subscriptionId = subscription.id;
+    } catch (error) {
+      console.error('Failed to create subscription for new user:', error);
+    }
 
     // Generate JWT token
     const payload: JwtPayload = {
