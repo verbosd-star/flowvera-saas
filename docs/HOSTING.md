@@ -22,6 +22,13 @@ Para desarrollo local, consulta el [README principal](../README.md) para instruc
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:3001
 
+**Módulos disponibles:**
+- Autenticación (Login/Registro)
+- Dashboard
+- Proyectos
+- CRM (Contactos y Empresas)
+- Configuración de Usuario (Perfil y Contraseña)
+
 ---
 
 ## ☁️ Opciones de Hosting
