@@ -217,6 +217,9 @@ npm run test:cov
    - Click "Get Started" to register
    - Fill in the registration form
    - You should be redirected to the dashboard
+   - Navigate to Projects (http://localhost:3000/projects)
+   - Navigate to CRM (http://localhost:3000/crm/contacts)
+   - Navigate to Settings (http://localhost:3000/settings)
    - Try logging out and logging back in
 
 ## Extending the Module
