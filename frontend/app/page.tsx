@@ -34,6 +34,12 @@ export default function Home() {
               Get Started
             </Link>
             <Link
+              href="/pricing"
+              className="flex h-12 items-center justify-center rounded-full border border-solid border-blue-600 px-8 text-blue-600 dark:text-blue-400 font-medium transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/20"
+            >
+              View Pricing
+            </Link>
+            <Link
               href="/login"
               className="flex h-12 items-center justify-center rounded-full border border-solid border-zinc-300 dark:border-zinc-700 px-8 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-900 dark:text-white"
             >
