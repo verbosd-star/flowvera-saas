@@ -14,9 +14,9 @@ export class SubscriptionsService {
   private subscriptions: Subscription[] = [];
 
   async create(userId: string, createSubscriptionDto: CreateSubscriptionDto): Promise<Subscription> {
-    // Check if user already has an active subscription
+    // Check if user already has an active subscription or is in trial
     const existingSubscription = await this.findByUserId(userId);
-    if (existingSubscription && existingSubscription.status === SubscriptionStatus.ACTIVE) {
+    if (existingSubscription && (existingSubscription.status === SubscriptionStatus.ACTIVE || existingSubscription.status === SubscriptionStatus.TRIAL)) {
       throw new BadRequestException('User already has an active subscription');
     }
 
@@ -53,6 +53,8 @@ export class SubscriptionsService {
   }
 
   async findByUserId(userId: string): Promise<Subscription | undefined> {
+    // Check and update expired subscriptions before finding
+    await this.checkAndUpdateExpired();
     return this.subscriptions.find((sub) => sub.userId === userId);
   }
 
@@ -125,6 +127,9 @@ export class SubscriptionsService {
   }
 
   async getSubscriptionInfo(userId: string): Promise<SubscriptionResponseDto> {
+    // Check and update expired subscriptions
+    await this.checkAndUpdateExpired();
+    
     const subscription = await this.findByUserId(userId);
     if (!subscription) {
       throw new NotFoundException('Subscription not found');
