@@ -6,9 +6,10 @@ import { UsersModule } from './users/users.module';
 import { ProjectsModule } from './projects/projects.module';
 import { CrmModule } from './crm/crm.module';
 import { SettingsModule } from './settings/settings.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, ProjectsModule, CrmModule, SettingsModule],
+  imports: [AuthModule, UsersModule, ProjectsModule, CrmModule, SettingsModule, AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })

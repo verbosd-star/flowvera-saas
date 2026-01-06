@@ -4,6 +4,7 @@ export interface User {
   firstName?: string;
   lastName?: string;
   role: 'admin' | 'user' | 'manager';
+  isActive?: boolean;
 }
 
 export interface AuthResponse {

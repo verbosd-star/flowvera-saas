@@ -13,7 +13,7 @@ Flowvera is an all-in-one SaaS platform that combines **project management (Mond
 - 🤝 **Built-in CRM** ✅
 - 🔐 **Secure authentication with JWT & RBAC** ✅
 - ⚙️ **User settings & profile management** ✅
-- 🎛️ Admin control panel
+- 🎛️ **Admin control panel** ✅
 - 💳 Subscription-based SaaS model
 
 > ✅ = Implemented | 🚧 = In Progress | 📋 = Planned
@@ -182,6 +182,32 @@ User settings for profile and account management!
 - Real-time state updates without page reload
 - JWT authentication required
 - Success/error feedback messages
+
+### Admin Panel
+
+User management for administrators!
+
+**API Endpoints (http://localhost:3001):**
+- `GET /admin/users` - Get all users (admin only)
+- `PATCH /admin/users/:id` - Update user role or status (admin only)
+- `DELETE /admin/users/:id` - Delete user (admin only)
+
+**Frontend Page (http://localhost:3000):**
+- `/admin` - Admin panel with user management
+
+**Features:**
+- View all registered users with their roles and status
+- Edit user roles (user, manager, admin)
+- Activate/deactivate user accounts
+- Delete users with confirmation
+- Prevents admins from deleting themselves
+- JWT authentication and role-based access control
+- Only accessible to users with admin role
+
+**Default Admin Credentials:**
+- Email: `admin@flowvera.com`
+- Password: `Admin123!`
+- Can be customized via environment variables
 
 ---
 
