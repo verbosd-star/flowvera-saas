@@ -6,12 +6,15 @@ import {
   PLAN_DETAILS 
 } from './subscription.entity';
 import { CreateSubscriptionDto, UpdateSubscriptionDto, SubscriptionResponseDto } from './dto/subscription.dto';
-import { randomUUID } from 'crypto';
+import { PrismaService } from '../prisma/prisma.service';
+import { 
+  SubscriptionPlan as PrismaSubscriptionPlan,
+  SubscriptionStatus as PrismaSubscriptionStatus 
+} from '@prisma/client';
 
 @Injectable()
 export class SubscriptionsService {
-  // In-memory storage for now (will be replaced with database later)
-  private subscriptions: Subscription[] = [];
+  constructor(private prisma: PrismaService) {}
 
   async create(userId: string, createSubscriptionDto: CreateSubscriptionDto): Promise<Subscription> {
     // Check if user already has an active subscription or is in trial
@@ -33,37 +36,58 @@ export class SubscriptionsService {
       endDate.setMonth(endDate.getMonth() + 1); // 1 month subscription
     }
 
-    const subscription: Subscription = {
-      id: randomUUID(),
-      userId,
-      plan: createSubscriptionDto.plan,
-      status: isTrial ? SubscriptionStatus.TRIAL : SubscriptionStatus.ACTIVE,
-      startDate,
-      endDate,
-      trialEndsAt: isTrial ? endDate : undefined,
-      pricePerUser: planDetails.pricePerUser,
-      currency: 'USD',
-      limits: planDetails.limits,
-      createdAt: now,
-      updatedAt: now,
-    };
+    // Convert plan to Prisma enum format
+    const prismaPlan = createSubscriptionDto.plan.toUpperCase().replace('_', '_') as PrismaSubscriptionPlan;
+    const prismaStatus = (isTrial ? 'TRIAL' : 'ACTIVE') as PrismaSubscriptionStatus;
 
-    this.subscriptions.push(subscription);
-    return subscription;
+    const dbSubscription = await this.prisma.subscription.create({
+      data: {
+        userId,
+        plan: prismaPlan,
+        status: prismaStatus,
+        startDate,
+        endDate,
+        trialEndsAt: isTrial ? endDate : null,
+        pricePerUser: planDetails.pricePerUser,
+        currency: 'USD',
+        maxUsers: planDetails.limits.maxUsers,
+        maxProjects: planDetails.limits.maxProjects,
+        maxContacts: planDetails.limits.maxContacts,
+        maxCompanies: planDetails.limits.maxCompanies,
+        storageGB: planDetails.limits.storageGB,
+        hasAdvancedCRM: planDetails.limits.hasAdvancedCRM,
+        hasAdminPanel: planDetails.limits.hasAdminPanel,
+        hasAnalytics: planDetails.limits.hasAnalytics,
+        hasAutomation: planDetails.limits.hasAutomation,
+        hasIntegrations: planDetails.limits.hasIntegrations,
+      },
+    });
+
+    return this.mapPrismaToSubscription(dbSubscription);
   }
 
   async findByUserId(userId: string): Promise<Subscription | undefined> {
     // Check and update expired subscriptions before finding
     await this.checkAndUpdateExpired();
-    return this.subscriptions.find((sub) => sub.userId === userId);
+    
+    const dbSubscription = await this.prisma.subscription.findUnique({
+      where: { userId },
+    });
+
+    return dbSubscription ? this.mapPrismaToSubscription(dbSubscription) : undefined;
   }
 
   async findById(id: string): Promise<Subscription | undefined> {
-    return this.subscriptions.find((sub) => sub.id === id);
+    const dbSubscription = await this.prisma.subscription.findUnique({
+      where: { id },
+    });
+
+    return dbSubscription ? this.mapPrismaToSubscription(dbSubscription) : undefined;
   }
 
   async findAll(): Promise<Subscription[]> {
-    return this.subscriptions;
+    const dbSubscriptions = await this.prisma.subscription.findMany();
+    return dbSubscriptions.map(sub => this.mapPrismaToSubscription(sub));
   }
 
   async update(userId: string, updateSubscriptionDto: UpdateSubscriptionDto): Promise<Subscription> {
@@ -78,22 +102,40 @@ export class SubscriptionsService {
       throw new BadRequestException('Cannot update cancelled or expired subscription');
     }
 
-    if (updateSubscriptionDto.plan) {
-      const newPlanDetails = PLAN_DETAILS[updateSubscriptionDto.plan];
-      subscription.plan = updateSubscriptionDto.plan;
-      subscription.pricePerUser = newPlanDetails.pricePerUser;
-      subscription.limits = newPlanDetails.limits;
-      
-      // If upgrading from trial, set to active
-      if (subscription.status === SubscriptionStatus.TRIAL && 
-          updateSubscriptionDto.plan !== SubscriptionPlan.FREE_TRIAL) {
-        subscription.status = SubscriptionStatus.ACTIVE;
-        subscription.trialEndsAt = undefined;
-      }
+    if (!updateSubscriptionDto.plan) {
+      throw new BadRequestException('Plan is required for update');
     }
 
-    subscription.updatedAt = new Date();
-    return subscription;
+    const newPlanDetails = PLAN_DETAILS[updateSubscriptionDto.plan];
+    const prismaPlan = updateSubscriptionDto.plan.toUpperCase().replace('_', '_') as PrismaSubscriptionPlan;
+    
+    // If upgrading from trial, set to active
+    const newStatus = subscription.status === SubscriptionStatus.TRIAL && 
+                      updateSubscriptionDto.plan !== SubscriptionPlan.FREE_TRIAL
+      ? 'ACTIVE' as PrismaSubscriptionStatus
+      : subscription.status.toUpperCase() as PrismaSubscriptionStatus;
+
+    const dbSubscription = await this.prisma.subscription.update({
+      where: { userId },
+      data: {
+        plan: prismaPlan,
+        status: newStatus,
+        pricePerUser: newPlanDetails.pricePerUser,
+        trialEndsAt: newStatus === 'ACTIVE' ? null : undefined,
+        maxUsers: newPlanDetails.limits.maxUsers,
+        maxProjects: newPlanDetails.limits.maxProjects,
+        maxContacts: newPlanDetails.limits.maxContacts,
+        maxCompanies: newPlanDetails.limits.maxCompanies,
+        storageGB: newPlanDetails.limits.storageGB,
+        hasAdvancedCRM: newPlanDetails.limits.hasAdvancedCRM,
+        hasAdminPanel: newPlanDetails.limits.hasAdminPanel,
+        hasAnalytics: newPlanDetails.limits.hasAnalytics,
+        hasAutomation: newPlanDetails.limits.hasAutomation,
+        hasIntegrations: newPlanDetails.limits.hasIntegrations,
+      },
+    });
+
+    return this.mapPrismaToSubscription(dbSubscription);
   }
 
   async cancel(userId: string): Promise<Subscription> {
@@ -106,24 +148,34 @@ export class SubscriptionsService {
       throw new BadRequestException('Subscription is already cancelled');
     }
 
-    subscription.status = SubscriptionStatus.CANCELLED;
-    subscription.cancelledAt = new Date();
-    subscription.updatedAt = new Date();
+    const dbSubscription = await this.prisma.subscription.update({
+      where: { userId },
+      data: {
+        status: 'CANCELLED' as PrismaSubscriptionStatus,
+        cancelledAt: new Date(),
+      },
+    });
     
-    return subscription;
+    return this.mapPrismaToSubscription(dbSubscription);
   }
 
   async checkAndUpdateExpired(): Promise<void> {
     const now = new Date();
     
-    for (const subscription of this.subscriptions) {
-      if ((subscription.status === SubscriptionStatus.ACTIVE || 
-           subscription.status === SubscriptionStatus.TRIAL) && 
-          subscription.endDate < now) {
-        subscription.status = SubscriptionStatus.EXPIRED;
-        subscription.updatedAt = now;
-      }
-    }
+    await this.prisma.subscription.updateMany({
+      where: {
+        OR: [
+          { status: 'ACTIVE' as PrismaSubscriptionStatus },
+          { status: 'TRIAL' as PrismaSubscriptionStatus },
+        ],
+        endDate: {
+          lt: now,
+        },
+      },
+      data: {
+        status: 'EXPIRED' as PrismaSubscriptionStatus,
+      },
+    });
   }
 
   async getSubscriptionInfo(userId: string): Promise<SubscriptionResponseDto> {
@@ -166,5 +218,35 @@ export class SubscriptionsService {
       description: details.description,
       limits: details.limits,
     }));
+  }
+
+  // Helper method to map Prisma subscription to entity
+  private mapPrismaToSubscription(dbSub: any): Subscription {
+    return {
+      id: dbSub.id,
+      userId: dbSub.userId,
+      plan: dbSub.plan.toLowerCase() as SubscriptionPlan,
+      status: dbSub.status.toLowerCase() as SubscriptionStatus,
+      startDate: dbSub.startDate,
+      endDate: dbSub.endDate,
+      trialEndsAt: dbSub.trialEndsAt,
+      cancelledAt: dbSub.cancelledAt,
+      pricePerUser: dbSub.pricePerUser,
+      currency: dbSub.currency,
+      limits: {
+        maxUsers: dbSub.maxUsers,
+        maxProjects: dbSub.maxProjects,
+        maxContacts: dbSub.maxContacts,
+        maxCompanies: dbSub.maxCompanies,
+        storageGB: dbSub.storageGB,
+        hasAdvancedCRM: dbSub.hasAdvancedCRM,
+        hasAdminPanel: dbSub.hasAdminPanel,
+        hasAnalytics: dbSub.hasAnalytics,
+        hasAutomation: dbSub.hasAutomation,
+        hasIntegrations: dbSub.hasIntegrations,
+      },
+      createdAt: dbSub.createdAt,
+      updatedAt: dbSub.updatedAt,
+    };
   }
 }
