@@ -37,14 +37,38 @@ export class StripeController {
     @CurrentUser() user: any,
     @Body() body: CheckoutSessionDto,
   ) {
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    const useMockMode = this.configService.get<string>('STRIPE_MOCK_MODE') === 'true';
+
+    // Mock/Simulation Mode - for testing without real Stripe
+    if (useMockMode) {
+      console.log(`🎭 [MOCK MODE] Simulating Stripe checkout for user ${user.email}, plan: ${body.plan}`);
+      
+      // Simulate a successful checkout by directly updating the subscription
+      try {
+        await this.subscriptionsService.update(user.id, { plan: body.plan });
+        
+        // Return a mock success URL that simulates Stripe redirect
+        return {
+          url: `${frontendUrl}/subscription?success=true&session_id=mock_cs_${Date.now()}&mock=true`,
+          sessionId: `mock_cs_${Date.now()}`,
+          mockMode: true,
+          message: 'Mock mode: Subscription updated without payment',
+        };
+      } catch (error) {
+        return { error: 'Failed to update subscription in mock mode' };
+      }
+    }
+
+    // Real Stripe Mode
     const stripe = this.stripeService.getStripe();
     if (!stripe) {
       return {
-        error: 'Stripe is not configured. Please configure Stripe in environment variables.',
+        error: 'Stripe is not configured. Please configure Stripe in environment variables or enable STRIPE_MOCK_MODE.',
       };
     }
 
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    const frontendUrlReal = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     
     // Get price ID from environment based on plan
     let priceId: string | undefined;
@@ -72,8 +96,8 @@ export class StripeController {
       const session = await this.stripeService.createCheckoutSession({
         customerEmail: user.email,
         priceId: priceId,
-        successUrl: `${frontendUrl}/subscription?success=true&session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${frontendUrl}/subscription?canceled=true`,
+        successUrl: `${frontendUrlReal}/subscription?success=true&session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${frontendUrlReal}/subscription?canceled=true`,
         customerId: subscription?.stripeCustomerId,
         metadata: {
           userId: user.id,
@@ -91,10 +115,26 @@ export class StripeController {
   @Post('create-portal-session')
   @UseGuards(JwtAuthGuard)
   async createPortalSession(@CurrentUser() user: any) {
+    const useMockMode = this.configService.get<string>('STRIPE_MOCK_MODE') === 'true';
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+
+    // Mock/Simulation Mode
+    if (useMockMode) {
+      console.log(`🎭 [MOCK MODE] Simulating billing portal for user ${user.email}`);
+      
+      // In mock mode, just redirect back to subscription page with a message
+      return {
+        url: `${frontendUrl}/subscription?mock_portal=true`,
+        mockMode: true,
+        message: 'Mock mode: Billing portal simulation - manage your subscription on this page',
+      };
+    }
+
+    // Real Stripe Mode
     const stripe = this.stripeService.getStripe();
     if (!stripe) {
       return {
-        error: 'Stripe is not configured. Please configure Stripe in environment variables.',
+        error: 'Stripe is not configured. Please configure Stripe in environment variables or enable STRIPE_MOCK_MODE.',
       };
     }
 
@@ -103,8 +143,6 @@ export class StripeController {
     if (!subscription?.stripeCustomerId) {
       return { error: 'No Stripe customer found for this user' };
     }
-
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
 
     try {
       const session = await this.stripeService.createBillingPortalSession({

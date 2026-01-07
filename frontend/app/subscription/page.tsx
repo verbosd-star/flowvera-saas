@@ -17,6 +17,8 @@ function SubscriptionContent() {
   const searchParams = useSearchParams();
   const planFromUrl = searchParams.get('plan');
   const successParam = searchParams.get('success');
+  const mockParam = searchParams.get('mock');
+  const mockPortalParam = searchParams.get('mock_portal');
 
   useEffect(() => {
     loadData();
@@ -24,11 +26,20 @@ function SubscriptionContent() {
 
   useEffect(() => {
     if (successParam === 'true') {
-      setSuccess('Payment successful! Your subscription has been updated.');
+      if (mockParam === 'true') {
+        setSuccess('🎭 [MODO SIMULACIÓN] Pago simulado exitoso! Tu suscripción ha sido actualizada. (Sin cargo real)');
+      } else {
+        setSuccess('Payment successful! Your subscription has been updated.');
+      }
       // Clear the success parameter from URL
       router.replace('/subscription', { scroll: false });
     }
-  }, [successParam, router]);
+    
+    if (mockPortalParam === 'true') {
+      setSuccess('🎭 [MODO SIMULACIÓN] Portal de facturación simulado. Gestiona tu suscripción en esta página.');
+      router.replace('/subscription', { scroll: false });
+    }
+  }, [successParam, mockParam, mockPortalParam, router]);
 
   useEffect(() => {
     if (planFromUrl && plans.length > 0 && subscription) {
@@ -74,6 +85,15 @@ function SubscriptionContent() {
           return;
         }
         
+        // Check if it's mock mode
+        if (result.mockMode && result.url) {
+          setSuccess('🎭 Modo simulación activado - redirigiendo...');
+          setTimeout(() => {
+            window.location.href = result.url!;
+          }, 1000);
+          return;
+        }
+        
         if (result.url) {
           // Redirect to Stripe checkout
           window.location.href = result.url;
@@ -102,6 +122,15 @@ function SubscriptionContent() {
       
       if (result.error) {
         setError(result.error);
+        return;
+      }
+      
+      // Check if it's mock mode
+      if (result.mockMode && result.url) {
+        setSuccess('🎭 Modo simulación: ' + (result.message || 'Portal de facturación simulado'));
+        setTimeout(() => {
+          window.location.href = result.url!;
+        }, 1000);
         return;
       }
       

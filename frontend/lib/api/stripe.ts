@@ -8,11 +8,15 @@ export interface CheckoutSessionResponse {
   sessionId?: string;
   url?: string;
   error?: string;
+  mockMode?: boolean;
+  message?: string;
 }
 
 export interface BillingPortalResponse {
   url?: string;
   error?: string;
+  mockMode?: boolean;
+  message?: string;
 }
 
 export const stripeApi = {
