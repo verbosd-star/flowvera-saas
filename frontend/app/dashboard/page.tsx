@@ -82,6 +82,18 @@ export default function DashboardPage() {
 
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
               <button
+                onClick={() => router.push('/subscription')}
+                className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-6 border border-zinc-200 dark:border-zinc-700 hover:shadow-lg transition-shadow text-left"
+              >
+                <h4 className="font-semibold text-zinc-900 dark:text-white mb-2">Subscription</h4>
+                <p className="text-zinc-600 dark:text-zinc-400 text-sm">
+                  Manage your subscription and billing
+                </p>
+                <div className="mt-4 text-blue-600 dark:text-blue-400 font-medium text-sm">
+                  View Subscription →
+                </div>
+              </button>
+              <button
                 onClick={() => router.push('/projects')}
                 className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-6 border border-zinc-200 dark:border-zinc-700 hover:shadow-lg transition-shadow text-left"
               >

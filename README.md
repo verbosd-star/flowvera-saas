@@ -14,7 +14,7 @@ Flowvera is an all-in-one SaaS platform that combines **project management (Mond
 - 🔐 **Secure authentication with JWT & RBAC** ✅
 - ⚙️ **User settings & profile management** ✅
 - 🎛️ **Admin control panel** ✅
-- 💳 Subscription-based SaaS model
+- 💳 **Subscription-based SaaS model** ✅
 
 > ✅ = Implemented | 🚧 = In Progress | 📋 = Planned
 
@@ -42,7 +42,7 @@ Upgrade anytime.
 - **Backend**: NestJS + TypeScript
 - **Database**: PostgreSQL (in-memory for now)
 - **Auth**: JWT + RBAC with Passport.js ✅
-- **Billing**: Stripe Subscriptions (planned)
+- **Subscriptions**: Built-in subscription management ✅
 
 ---
 
@@ -208,6 +208,37 @@ User management for administrators!
 - Email: `admin@flowvera.com`
 - Password: `Admin123!`
 - Can be customized via environment variables
+
+### Subscription System
+
+Complete subscription management for SaaS monetization!
+
+**API Endpoints (http://localhost:3001):**
+- `GET /subscriptions/plans` - Get all available subscription plans (public)
+- `POST /subscriptions` - Create a new subscription
+- `GET /subscriptions` - Get current user's subscription
+- `PUT /subscriptions` - Update/upgrade subscription plan
+- `POST /subscriptions/cancel` - Cancel subscription
+
+**Frontend Pages (http://localhost:3000):**
+- `/pricing` - View and compare all subscription plans
+- `/subscription` - Manage your subscription
+
+**Features:**
+- Four subscription tiers: Free Trial, Basic, Premium, Enterprise
+- Automatic free trial on user registration (14 days)
+- Plan limits configuration (users, projects, contacts, storage)
+- Upgrade/downgrade between plans
+- Subscription cancellation with grace period
+- Real-time subscription status tracking
+- Days remaining calculation
+- Feature-based access control
+
+**Subscription Plans:**
+- **Free Trial**: 14 days, up to 5 users, 500 contacts, 1GB storage
+- **Basic** ($10/user/month): 5 users, 500 contacts, 1GB storage
+- **Premium** ($30/user/month): Unlimited users/contacts, 10GB storage, advanced features
+- **Enterprise** (Custom pricing): Unlimited everything, white-label, dedicated support
 
 ---
 

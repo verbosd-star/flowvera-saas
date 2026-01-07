@@ -7,9 +7,10 @@ import { ProjectsModule } from './projects/projects.module';
 import { CrmModule } from './crm/crm.module';
 import { SettingsModule } from './settings/settings.module';
 import { AdminModule } from './admin/admin.module';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, ProjectsModule, CrmModule, SettingsModule, AdminModule],
+  imports: [AuthModule, UsersModule, ProjectsModule, CrmModule, SettingsModule, AdminModule, SubscriptionsModule],
   controllers: [AppController],
   providers: [AppService],
 })
