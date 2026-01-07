@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -9,9 +10,14 @@ import { CrmModule } from './crm/crm.module';
 import { SettingsModule } from './settings/settings.module';
 import { AdminModule } from './admin/admin.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     PrismaModule,
     AuthModule,
     UsersModule,
@@ -20,6 +26,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
     SettingsModule,
     AdminModule,
     SubscriptionsModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

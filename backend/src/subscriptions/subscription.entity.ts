@@ -38,6 +38,9 @@ export class Subscription {
   pricePerUser: number; // in USD
   currency: string;
   limits: PlanLimits;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  stripePriceId?: string;
   createdAt: Date;
   updatedAt: Date;
 }

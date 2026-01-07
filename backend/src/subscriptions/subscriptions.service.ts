@@ -245,6 +245,9 @@ export class SubscriptionsService {
         hasAutomation: dbSub.hasAutomation,
         hasIntegrations: dbSub.hasIntegrations,
       },
+      stripeCustomerId: dbSub.stripeCustomerId,
+      stripeSubscriptionId: dbSub.stripeSubscriptionId,
+      stripePriceId: dbSub.stripePriceId,
       createdAt: dbSub.createdAt,
       updatedAt: dbSub.updatedAt,
     };
