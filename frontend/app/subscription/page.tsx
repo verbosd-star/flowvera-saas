@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { subscriptionApi, Subscription, Plan } from '@/lib/api/subscriptions';
+import { stripeApi } from '@/lib/api/stripe';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 function SubscriptionContent() {
@@ -15,10 +16,19 @@ function SubscriptionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const planFromUrl = searchParams.get('plan');
+  const successParam = searchParams.get('success');
 
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (successParam === 'true') {
+      setSuccess('Payment successful! Your subscription has been updated.');
+      // Clear the success parameter from URL
+      router.replace('/subscription', { scroll: false });
+    }
+  }, [successParam, router]);
 
   useEffect(() => {
     if (planFromUrl && plans.length > 0 && subscription) {
@@ -54,11 +64,56 @@ function SubscriptionContent() {
       setError('');
       setSuccess('');
       
+      // For paid plans (basic, premium), redirect to Stripe checkout
+      if (plan === 'basic' || plan === 'premium') {
+        const result = await stripeApi.createCheckoutSession({ plan });
+        
+        if (result.error) {
+          setError(result.error);
+          setActionLoading(false);
+          return;
+        }
+        
+        if (result.url) {
+          // Redirect to Stripe checkout
+          window.location.href = result.url;
+          // Don't set actionLoading to false since we're redirecting
+          return;
+        }
+      }
+      
+      // For free trial or if Stripe is not configured, update directly
       const result = await subscriptionApi.update({ plan });
       setSuccess(result.message);
       await loadData();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to upgrade subscription');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleManageBilling = async () => {
+    try {
+      setActionLoading(true);
+      setError('');
+      
+      const result = await stripeApi.createBillingPortalSession();
+      
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+      
+      if (result.url) {
+        // Redirect to Stripe billing portal
+        window.location.href = result.url;
+        return;
+      }
+      
+      setError('Billing portal is not available. Please configure Stripe.');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to access billing portal');
     } finally {
       setActionLoading(false);
     }
@@ -260,6 +315,15 @@ function SubscriptionContent() {
                   >
                     Change Plan
                   </button>
+                  {(subscription.plan === 'basic' || subscription.plan === 'premium') && (
+                    <button
+                      onClick={handleManageBilling}
+                      className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
+                      disabled={actionLoading}
+                    >
+                      Manage Billing
+                    </button>
+                  )}
                   <button
                     onClick={handleCancel}
                     className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
@@ -302,9 +366,9 @@ function SubscriptionContent() {
                     <button
                       onClick={() => handleUpgrade(plan.plan)}
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
-                      disabled={actionLoading}
+                      disabled={actionLoading || plan.plan === 'enterprise'}
                     >
-                      {plan.plan === 'enterprise' ? 'Contact Sales' : 'Upgrade'}
+                      {plan.plan === 'enterprise' ? 'Contact Sales' : (plan.plan === 'basic' || plan.plan === 'premium' ? 'Upgrade & Pay' : 'Upgrade')}
                     </button>
                   )}
                   {subscription?.plan === plan.plan && (
