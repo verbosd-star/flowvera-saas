@@ -39,6 +39,12 @@ export default function AdminLayout({ children, currentPage = 'dashboard' }: Adm
       path: '/admin/analytics',
     },
     {
+      id: 'notifications',
+      label: 'Notifications',
+      icon: '🔔',
+      path: '/admin/notifications',
+    },
+    {
       id: 'activity',
       label: 'Activity Logs',
       icon: '📋',
