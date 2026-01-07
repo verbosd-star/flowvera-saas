@@ -33,6 +33,12 @@ export default function AdminLayout({ children, currentPage = 'dashboard' }: Adm
       path: '/admin/users',
     },
     {
+      id: 'analytics',
+      label: 'Analytics',
+      icon: '📈',
+      path: '/admin/analytics',
+    },
+    {
       id: 'activity',
       label: 'Activity Logs',
       icon: '📋',
