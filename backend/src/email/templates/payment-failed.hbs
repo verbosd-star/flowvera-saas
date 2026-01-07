@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #EF4444; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 5px 5px; }
+        .button { background: #EF4444; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 20px 0; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+        .error { background: #FEE2E2; border-left: 4px solid #EF4444; padding: 15px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Payment Failed</h1>
+        </div>
+        <div class="content">
+            <h2>Hi {{firstName}},</h2>
+            <div class="error">
+                <strong>We were unable to process your payment.</strong>
+            </div>
+            <p>Unfortunately, your recent payment failed. This could be due to:</p>
+            <ul>
+                <li>Insufficient funds</li>
+                <li>Expired card</li>
+                <li>Bank decline</li>
+                <li>Incorrect billing information</li>
+            </ul>
+            <p>Please update your payment method to continue using Flowvera without interruption.</p>
+            <a href="{{billingUrl}}" class="button">Update Payment Method</a>
+            <p>If you need assistance, please contact our support team.</p>
+            <p><strong>The Flowvera Team</strong></p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2026 Flowvera. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
