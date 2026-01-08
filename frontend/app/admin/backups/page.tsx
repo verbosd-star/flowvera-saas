@@ -19,27 +19,27 @@ export default function BackupsPage() {
   const [backups, setBackups] = useState<Backup[]>([
     {
       id: '1',
-      name: 'Full Backup - 2026-01-07',
+      name: 'Full Backup - ' + new Date(Date.now() - 86400000).toISOString().split('T')[0],
       type: 'full',
       size: '45.2 MB',
       status: 'completed',
-      date: new Date('2026-01-07T10:30:00'),
+      date: new Date(Date.now() - 86400000), // 1 day ago
     },
     {
       id: '2',
-      name: 'Users Backup - 2026-01-06',
+      name: 'Users Backup - ' + new Date(Date.now() - 172800000).toISOString().split('T')[0],
       type: 'users',
       size: '12.5 MB',
       status: 'completed',
-      date: new Date('2026-01-06T15:45:00'),
+      date: new Date(Date.now() - 172800000), // 2 days ago
     },
     {
       id: '3',
-      name: 'Settings Backup - 2026-01-05',
+      name: 'Settings Backup - ' + new Date(Date.now() - 259200000).toISOString().split('T')[0],
       type: 'settings',
       size: '1.2 MB',
       status: 'completed',
-      date: new Date('2026-01-05T09:00:00'),
+      date: new Date(Date.now() - 259200000), // 3 days ago
     },
   ]);
   
@@ -49,6 +49,8 @@ export default function BackupsPage() {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newBackupType, setNewBackupType] = useState<BackupType>('full');
+
+  const BACKUP_SIMULATION_DELAY = 3000; // 3 seconds
 
   const handleCreateBackup = () => {
     const typeNames = {
@@ -74,14 +76,14 @@ export default function BackupsPage() {
       setBackups(prev =>
         prev.map(b =>
           b.id === newBackup.id
-            ? { ...b, status: 'completed' as BackupStatus, size: getRandomSize() }
+            ? { ...b, status: 'completed' as BackupStatus, size: getSimulatedBackupSize() }
             : b
         )
       );
-    }, 3000);
+    }, BACKUP_SIMULATION_DELAY);
   };
 
-  const getRandomSize = () => {
+  const getSimulatedBackupSize = () => {
     const sizes = ['1.2 MB', '5.8 MB', '12.5 MB', '25.3 MB', '45.2 MB'];
     return sizes[Math.floor(Math.random() * sizes.length)];
   };
