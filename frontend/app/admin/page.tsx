@@ -96,6 +96,16 @@ export default function AdminPage() {
                   </div>
                 </button>
                 <button
+                  onClick={() => router.push('/admin/backups')}
+                  className="w-full flex items-center gap-3 p-3 bg-zinc-50 dark:bg-zinc-800 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors text-left"
+                >
+                  <span className="text-2xl">💾</span>
+                  <div>
+                    <div className="font-medium text-zinc-900 dark:text-white">Backup Tools</div>
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400">Create and restore backups</div>
+                  </div>
+                </button>
+                <button
                   onClick={() => router.push('/admin/content')}
                   className="w-full flex items-center gap-3 p-3 bg-zinc-50 dark:bg-zinc-800 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors text-left"
                 >

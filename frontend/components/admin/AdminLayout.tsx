@@ -63,6 +63,12 @@ export default function AdminLayout({ children, currentPage = 'dashboard' }: Adm
       path: '/admin/content',
     },
     {
+      id: 'backups',
+      label: 'Backups',
+      icon: '💾',
+      path: '/admin/backups',
+    },
+    {
       id: 'settings',
       label: 'Settings',
       icon: '⚙️',
