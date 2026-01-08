@@ -51,6 +51,12 @@ export default function AdminLayout({ children, currentPage = 'dashboard' }: Adm
       path: '/admin/activity',
     },
     {
+      id: 'roles',
+      label: 'Roles',
+      icon: '🎭',
+      path: '/admin/roles',
+    },
+    {
       id: 'content',
       label: 'Content',
       icon: '📝',
