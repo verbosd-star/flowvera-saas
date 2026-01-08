@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { subscriptionApi, Plan } from '@/lib/api/subscriptions';
+import { stripeApi } from '@/lib/api/stripe';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -9,6 +10,7 @@ export default function PricingPage() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [actionLoading, setActionLoading] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
 
@@ -28,11 +30,43 @@ export default function PricingPage() {
     }
   };
 
-  const handleSelectPlan = (plan: string) => {
+  const handleSelectPlan = async (plan: string) => {
     if (!user) {
       router.push('/register');
       return;
     }
+    
+    // For paid plans, try to redirect to Stripe checkout
+    if (plan === 'basic' || plan === 'premium') {
+      try {
+        setActionLoading(true);
+        setError('');
+        
+        const result = await stripeApi.createCheckoutSession({ plan });
+        
+        if (result.error) {
+          // If Stripe is not configured, fall back to subscription page
+          console.warn('Stripe not configured:', result.error);
+          router.push(`/subscription?plan=${plan}`);
+          return;
+        }
+        
+        if (result.url) {
+          // Redirect to Stripe checkout
+          window.location.href = result.url;
+          return;
+        }
+      } catch (err) {
+        console.error('Failed to create checkout session:', err);
+        // Fall back to subscription page
+        router.push(`/subscription?plan=${plan}`);
+      } finally {
+        setActionLoading(false);
+      }
+      return;
+    }
+    
+    // For free trial or enterprise, go to subscription page
     router.push(`/subscription?plan=${plan}`);
   };
 
@@ -213,7 +247,8 @@ export default function PricingPage() {
 
               <button
                 onClick={() => handleSelectPlan(plan.plan)}
-                className={`w-full ${getButtonColor(plan.plan)} text-white py-3 rounded-lg font-medium transition-colors`}
+                className={`w-full ${getButtonColor(plan.plan)} text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50`}
+                disabled={actionLoading}
               >
                 {plan.plan === 'free_trial' ? 'Start Free Trial' : plan.plan === 'enterprise' ? 'Contact Sales' : 'Get Started'}
               </button>

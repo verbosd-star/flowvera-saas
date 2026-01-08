@@ -40,9 +40,11 @@ Upgrade anytime.
 
 - **Frontend**: Next.js 16 + Tailwind CSS + TypeScript
 - **Backend**: NestJS + TypeScript
-- **Database**: PostgreSQL (in-memory for now)
+- **Database**: Prisma ORM with SQLite (dev) / PostgreSQL (production)
 - **Auth**: JWT + RBAC with Passport.js ✅
-- **Subscriptions**: Built-in subscription management ✅
+- **Payments**: Stripe for subscription billing ✅
+- **Email**: Nodemailer with SendGrid/SMTP support ✅
+- **Subscriptions**: Full subscription lifecycle management ✅
 
 ---
 
@@ -211,7 +213,7 @@ User management for administrators!
 
 ### Subscription System
 
-Complete subscription management for SaaS monetization!
+Complete subscription management with database persistence, Stripe payments, and email notifications!
 
 **API Endpoints (http://localhost:3001):**
 - `GET /subscriptions/plans` - Get all available subscription plans (public)
@@ -219,6 +221,9 @@ Complete subscription management for SaaS monetization!
 - `GET /subscriptions` - Get current user's subscription
 - `PUT /subscriptions` - Update/upgrade subscription plan
 - `POST /subscriptions/cancel` - Cancel subscription
+- `POST /stripe/create-checkout-session` - Create Stripe checkout (requires Stripe config)
+- `POST /stripe/create-portal-session` - Access billing portal (requires Stripe config)
+- `POST /stripe/webhook` - Handle Stripe webhooks (requires Stripe config)
 
 **Frontend Pages (http://localhost:3000):**
 - `/pricing` - View and compare all subscription plans
@@ -233,12 +238,28 @@ Complete subscription management for SaaS monetization!
 - Real-time subscription status tracking
 - Days remaining calculation
 - Feature-based access control
+- **Database persistence** with SQLite (dev) or PostgreSQL (production)
+- **Stripe payment integration** for secure checkout and billing
+- **Email notifications** for registration, trial expiration, payments, and cancellations
+- **Graceful degradation** when Stripe/Email are not configured
 
 **Subscription Plans:**
 - **Free Trial**: 14 days, up to 5 users, 500 contacts, 1GB storage
 - **Basic** ($10/user/month): 5 users, 500 contacts, 1GB storage
 - **Premium** ($30/user/month): Unlimited users/contacts, 10GB storage, advanced features
 - **Enterprise** (Custom pricing): Unlimited everything, white-label, dedicated support
+
+**Email Templates:**
+- Welcome email on registration with trial information
+- Trial expiration warnings (configurable days before expiry)
+- Payment success confirmations
+- Subscription cancellation confirmations
+- Payment failure notifications
+
+**Configuration Required:**
+- Stripe: Set `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, and price IDs
+- Email: Set `SENDGRID_API_KEY` or SMTP credentials
+- See [SUBSCRIPTION_CONFIGURATION.md](docs/SUBSCRIPTION_CONFIGURATION.md) for detailed setup instructions
 
 ---
 

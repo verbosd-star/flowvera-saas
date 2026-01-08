@@ -8,7 +8,7 @@ import { adminApi, UpdateUserRequest } from '@/lib/api/admin';
 import { User } from '@/types/auth';
 
 export default function AdminPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, loading: authLoading } = useAuth();
   const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -17,14 +17,19 @@ export default function AdminPage() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   useEffect(() => {
+    // Wait for auth to load before checking role
+    if (authLoading) {
+      return;
+    }
+
     // Check if user is admin
-    if (user && user.role !== 'admin') {
+    if (!user || user.role !== 'admin') {
       router.push('/dashboard');
       return;
     }
     
     loadUsers();
-  }, [user, router]);
+  }, [user, authLoading, router]);
 
   const loadUsers = async () => {
     try {
@@ -66,8 +71,17 @@ export default function AdminPage() {
     router.push('/login');
   };
 
+  // Show loading while auth is being checked
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
   // Only show to admin users
-  if (user?.role !== 'admin') {
+  if (!user || user.role !== 'admin') {
     return null;
   }
 

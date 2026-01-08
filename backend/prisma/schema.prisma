@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  MANAGER
+}
+
+enum SubscriptionPlan {
+  FREE_TRIAL
+  BASIC
+  PREMIUM
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  CANCELLED
+  EXPIRED
+  TRIAL
+}
+
+model User {
+  id             String        @id @default(uuid())
+  email          String        @unique
+  password       String
+  firstName      String?
+  lastName       String?
+  role           UserRole      @default(USER)
+  isActive       Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  
+  subscription   Subscription?
+  
+  @@map("users")
+}
+
+model Subscription {
+  id                   String             @id @default(uuid())
+  userId               String             @unique
+  plan                 SubscriptionPlan
+  status               SubscriptionStatus @default(TRIAL)
+  startDate            DateTime
+  endDate              DateTime
+  trialEndsAt          DateTime?
+  cancelledAt          DateTime?
+  pricePerUser         Float              @default(0)
+  currency             String             @default("USD")
+  
+  // Plan limits stored as JSON
+  maxUsers             Int
+  maxProjects          Int
+  maxContacts          Int
+  maxCompanies         Int
+  storageGB            Int
+  hasAdvancedCRM       Boolean            @default(false)
+  hasAdminPanel        Boolean            @default(false)
+  hasAnalytics         Boolean            @default(false)
+  hasAutomation        Boolean            @default(false)
+  hasIntegrations      Boolean            @default(false)
+  
+  // Stripe integration fields
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  stripePriceId        String?
+  
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("subscriptions")
+}

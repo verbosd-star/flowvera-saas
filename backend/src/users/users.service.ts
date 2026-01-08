@@ -3,14 +3,12 @@ import { User, UserRole } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto, ChangePasswordDto } from './dto/update-user.dto';
-import { randomUUID } from 'crypto';
+import { PrismaService } from '../prisma/prisma.service';
+import { UserRole as PrismaUserRole } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  // In-memory storage for now (will be replaced with database later)
-  private users: User[] = [];
-
-  constructor() {
+  constructor(private prisma: PrismaService) {
     // Create default admin user on startup
     this.initializeDefaultAdmin();
   }
@@ -23,18 +21,16 @@ export class UsersService {
     
     if (!existingAdmin) {
       const hashedPassword = await bcrypt.hash(adminPassword, 10);
-      const admin: User = {
-        id: randomUUID(),
-        email: adminEmail,
-        password: hashedPassword,
-        firstName: 'Admin',
-        lastName: 'User',
-        role: UserRole.ADMIN,
-        isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      this.users.push(admin);
+      await this.prisma.user.create({
+        data: {
+          email: adminEmail,
+          password: hashedPassword,
+          firstName: 'Admin',
+          lastName: 'User',
+          role: 'ADMIN' as PrismaUserRole,
+          isActive: true,
+        },
+      });
       console.log(`✅ Default admin user created: ${adminEmail}`);
     }
   }
@@ -42,32 +38,39 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-    const user: User = {
-      id: randomUUID(),
-      email: createUserDto.email,
-      password: hashedPassword,
-      firstName: createUserDto.firstName,
-      lastName: createUserDto.lastName,
-      role: createUserDto.role || UserRole.USER,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    const dbUser = await this.prisma.user.create({
+      data: {
+        email: createUserDto.email,
+        password: hashedPassword,
+        firstName: createUserDto.firstName,
+        lastName: createUserDto.lastName,
+        role: (createUserDto.role?.toUpperCase() || 'USER') as PrismaUserRole,
+        isActive: true,
+      },
+    });
 
-    this.users.push(user);
-    return user;
+    return this.mapPrismaToUser(dbUser);
   }
 
   async findByEmail(email: string): Promise<User | undefined> {
-    return this.users.find((user) => user.email === email);
+    const dbUser = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    return dbUser ? this.mapPrismaToUser(dbUser) : undefined;
   }
 
   async findById(id: string): Promise<User | undefined> {
-    return this.users.find((user) => user.id === id);
+    const dbUser = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    return dbUser ? this.mapPrismaToUser(dbUser) : undefined;
   }
 
   async findAll(): Promise<User[]> {
-    return this.users;
+    const dbUsers = await this.prisma.user.findMany();
+    return dbUsers.map(user => this.mapPrismaToUser(user));
   }
 
   async updateProfile(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -76,16 +79,15 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    // Update user fields
-    if (updateUserDto.firstName !== undefined) {
-      user.firstName = updateUserDto.firstName;
-    }
-    if (updateUserDto.lastName !== undefined) {
-      user.lastName = updateUserDto.lastName;
-    }
-    user.updatedAt = new Date();
+    const dbUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        firstName: updateUserDto.firstName,
+        lastName: updateUserDto.lastName,
+      },
+    });
 
-    return user;
+    return this.mapPrismaToUser(dbUser);
   }
 
   async changePassword(userId: string, changePasswordDto: ChangePasswordDto): Promise<void> {
@@ -104,8 +106,13 @@ export class UsersService {
     }
 
     // Hash and update new password
-    user.password = await bcrypt.hash(changePasswordDto.newPassword, 10);
-    user.updatedAt = new Date();
+    const hashedPassword = await bcrypt.hash(changePasswordDto.newPassword, 10);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        password: hashedPassword,
+      },
+    });
   }
 
   async updateUser(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -114,29 +121,51 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    // Update user fields (admin can update all fields including role and isActive)
+    const updateData: any = {};
     if (updateUserDto.firstName !== undefined) {
-      user.firstName = updateUserDto.firstName;
+      updateData.firstName = updateUserDto.firstName;
     }
     if (updateUserDto.lastName !== undefined) {
-      user.lastName = updateUserDto.lastName;
+      updateData.lastName = updateUserDto.lastName;
     }
     if (updateUserDto.role !== undefined) {
-      user.role = updateUserDto.role;
+      updateData.role = updateUserDto.role.toUpperCase() as PrismaUserRole;
     }
     if (updateUserDto.isActive !== undefined) {
-      user.isActive = updateUserDto.isActive;
+      updateData.isActive = updateUserDto.isActive;
     }
-    user.updatedAt = new Date();
 
-    return user;
+    const dbUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+    });
+
+    return this.mapPrismaToUser(dbUser);
   }
 
   async deleteUser(userId: string): Promise<void> {
-    const userIndex = this.users.findIndex((user) => user.id === userId);
-    if (userIndex === -1) {
+    try {
+      await this.prisma.user.delete({
+        where: { id: userId },
+      });
+    } catch (error) {
       throw new NotFoundException('User not found');
     }
-    this.users.splice(userIndex, 1);
+  }
+
+  // Helper method to map Prisma user to entity
+  private mapPrismaToUser(dbUser: any): User {
+    return {
+      id: dbUser.id,
+      email: dbUser.email,
+      password: dbUser.password,
+      firstName: dbUser.firstName,
+      lastName: dbUser.lastName,
+      role: dbUser.role.toLowerCase() as UserRole,
+      isActive: dbUser.isActive,
+      subscriptionId: undefined, // This would need to be fetched if needed
+      createdAt: dbUser.createdAt,
+      updatedAt: dbUser.updatedAt,
+    };
   }
 }

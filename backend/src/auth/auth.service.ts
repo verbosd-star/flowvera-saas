@@ -6,6 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
+import { EmailService } from '../email/email.service';
 import { SubscriptionPlan } from '../subscriptions/subscription.entity';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -17,6 +18,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private subscriptionsService: SubscriptionsService,
+    private emailService: EmailService,
     private jwtService: JwtService,
   ) {}
 
@@ -36,8 +38,14 @@ export class AuthService {
         plan: SubscriptionPlan.FREE_TRIAL,
       });
       user.subscriptionId = subscription.id;
+      
+      // Send welcome email
+      await this.emailService.sendWelcomeEmail(
+        user.email,
+        user.firstName || 'User',
+      );
     } catch (error) {
-      console.error('Failed to create subscription for new user:', error);
+      console.error('Failed to create subscription or send email for new user:', error);
     }
 
     // Generate JWT token

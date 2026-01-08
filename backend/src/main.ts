@@ -3,7 +3,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    rawBody: true, // Enable raw body for Stripe webhooks
+  });
 
   // Enable CORS for frontend
   app.enableCors({
@@ -21,5 +23,6 @@ async function bootstrap() {
   );
 
   await app.listen(process.env.PORT ?? 3001);
+  console.log(`🚀 Application is running on: http://localhost:${process.env.PORT ?? 3001}`);
 }
 bootstrap();
