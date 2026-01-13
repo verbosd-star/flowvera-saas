@@ -13,6 +13,7 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
+echo ✅ Node.js version:
 node --version
 echo.
 
