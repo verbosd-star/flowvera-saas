@@ -42,7 +42,7 @@ function copyEnvFile(examplePath, targetPath) {
   }
 }
 
-async function main() {
+function main() {
   log('\n🚀 Setting up Flowvera local environment...\n', colors.cyan);
 
   // Check Node.js version
@@ -88,7 +88,9 @@ async function main() {
   console.log();
 }
 
-main().catch(error => {
-  log(`\n❌ Setup failed: ${error.message}`, colors.red);
+try {
+  main();
+} catch (error) {
+  log(`\n❌ Setup failed: ${error && error.message ? error.message : 'Unknown error'}`, colors.red);
   process.exit(1);
-});
+}
