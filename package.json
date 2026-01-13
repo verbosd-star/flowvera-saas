@@ -4,6 +4,7 @@
   "private": true,
   "description": "Flowvera - Project Management + CRM SaaS Platform",
   "scripts": {
+    "setup": "bash setup-local.sh || cmd /c setup-local.bat",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run start:dev",

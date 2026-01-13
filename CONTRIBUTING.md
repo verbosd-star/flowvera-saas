@@ -95,6 +95,31 @@ PostgreSQL >= 14.0
 
 ### Instalación
 
+#### Opción 1: Configuración Rápida (Recomendado)
+
+1. **Fork y clona el repositorio:**
+```bash
+git clone https://github.com/tu-usuario/flowvera-saas.git
+cd flowvera-saas
+```
+
+2. **Ejecuta el script de configuración:**
+```bash
+npm run setup
+```
+
+Este script automáticamente:
+- Instala todas las dependencias
+- Crea archivos `.env` desde los archivos `.env.example`
+- Te muestra los próximos pasos
+
+3. **Inicia el entorno de desarrollo:**
+```bash
+npm run dev
+```
+
+#### Opción 2: Configuración Manual
+
 1. **Fork y clona el repositorio:**
 ```bash
 git clone https://github.com/tu-usuario/flowvera-saas.git
