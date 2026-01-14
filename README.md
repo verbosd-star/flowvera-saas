@@ -64,6 +64,22 @@ Feedback and contributions are welcome.
 
 The project includes a complete authentication system with login, registration, and protected routes!
 
+#### Quick Setup (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/verbosd-star/flowvera-saas.git
+cd flowvera-saas
+
+# Run the setup script (installs dependencies and creates .env files)
+npm run setup
+
+# Run both frontend and backend in development mode
+npm run dev
+```
+
+#### Manual Setup
+
 ```bash
 # Clone the repository
 git clone https://github.com/verbosd-star/flowvera-saas.git
